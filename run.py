@@ -28,7 +28,6 @@ OUT_TITLE = """
 
 logger.info(OUT_TITLE)
 
-
 class RunPytest:
 
     @classmethod
