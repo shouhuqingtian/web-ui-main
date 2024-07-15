@@ -5,6 +5,7 @@
 # @Time: 2020/10/26  19:04
 
 import os
+import subprocess
 import sys
 
 from public.message_notice import EnterpriseWeChatNotice, DingDingNotice
@@ -209,6 +210,7 @@ class RunPytest:
             ['-m', 'testbaidu_web', '-n=1', '--reruns=0', '--alluredir', f'{PRPORE_JSON_DIR}', f'{CASE_DIR}'])
 
         #生成测试报告
+        logger.info('生成 Allure 报告...')
         os.system(f'allure generate {PRPORE_JSON_DIR} -o {PRPORE_ALLURE_DIR} --clean')
         logger.info('测试报告生成完成！')
         #
@@ -218,6 +220,45 @@ class RunPytest:
         #
         # logger.info('邮件推送完成')
 
+'''  
+  @staticmethod
+    def run_bebug():
+        """
+        debug 调试
+        :return:
+        """
+        try:
+            # 执行前检查是否清除报告
+            logger.info('清除旧报告...')
+            DelReport().run_del_report()
+
+            # 确保使用正确的目录路径
+            PRPORE_JSON_DIR = os.path.join(os.getcwd(), 'report_json')
+            PRPORE_ALLURE_DIR = os.path.join(os.getcwd(), 'report_allure')
+
+            # 创建目录
+            os.makedirs(PRPORE_JSON_DIR, exist_ok=True)
+            os.makedirs(PRPORE_ALLURE_DIR, exist_ok=True)
+
+            # 运行 pytest 测试
+            logger.info('运行 pytest 测试...')
+            pytest.main(['-m', 'testbaidu_web', '-n=1', '--reruns=0', '--alluredir', PRPORE_JSON_DIR, 'tests'])
+            logger.info('pytest 测试完成')
+
+            # 生成测试报告
+            logger.info('生成 Allure 报告...')
+            result = subprocess.run(
+                ['allure', 'generate', PRPORE_JSON_DIR, '-o', PRPORE_ALLURE_DIR, '--clean'],
+                capture_output=True, text=True
+            )
+            logger.info(result.stdout)
+            logger.error(result.stderr)
+            logger.info('Allure 报告生成完成')
+
+        except UnicodeDecodeError as e:
+            logger.error(f"Unicode 解码错误: {e}")
+        except Exception as e:
+            logger.error(f"运行过程中出现错误: {e}")'''
 
 if __name__ == '__main__':
     # RunPytest.run()
